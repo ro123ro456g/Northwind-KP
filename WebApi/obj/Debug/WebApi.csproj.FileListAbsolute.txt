@@ -95,3 +95,7 @@ D:\Users\Administrator\Documents\GitHub\Northwind-KP\WebApi\obj\Debug\WebApi.csp
 D:\Users\Administrator\Documents\GitHub\Northwind-KP\WebApi\obj\Debug\WebApi.csproj.CopyComplete
 D:\Users\Administrator\Documents\GitHub\Northwind-KP\WebApi\obj\Debug\WebApi.dll
 D:\Users\Administrator\Documents\GitHub\Northwind-KP\WebApi\obj\Debug\WebApi.pdb
+D:\Users\Administrator\Documents\GitHub\Northwind-KP\WebApi\bin\System.Web.Cors.dll
+D:\Users\Administrator\Documents\GitHub\Northwind-KP\WebApi\bin\System.Web.Http.Cors.dll
+D:\Users\Administrator\Documents\GitHub\Northwind-KP\WebApi\bin\System.Web.Http.Cors.xml
+D:\Users\Administrator\Documents\GitHub\Northwind-KP\WebApi\bin\zh-Hant\EntityFramework.SqlServer.resources.dll
