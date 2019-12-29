@@ -87,10 +87,26 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div id="Create" class="modal-body">
+                    <div id="Edit" class="modal-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>種類名稱</th>
+                                    <th>描述</th>
+                                    <th>圖片</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input class="text-box single-line" type="text" id="EditCName" /></td>
+                                    <td><input class="text-box single-line" type="text" id="EDescription" /></td>
+                                    <td><img id="imgPreview" src="" style="width:320px;height:240px" /><input id="File1" name="File1" type="file" accept="image/*" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="modal-footer">
-
+                        <button type="button" id="EditData" class="btn btn-secondary" data-dismiss="modal">Save</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -130,15 +146,30 @@
                     //詳細鈕
                     var btnDetail = '<button type = "button" id = "Detail" class= "btn btn-primary" name = "' + category.CategoryID + '" onclick="BtnDetail()" data-toggle="modal" data-target="#DetailModal">詳細</button>';
                     //編輯鈕
-                    var btnEdit = '<button type = "button" id = "Detail" class= "btn btn-warning" name = "' + category.CategoryID + '" onclick="BtnDetail()" data-toggle="modal" data-target="#EditModal">編輯</button>'
+                    var btnEdit = '<button type = "button" id = "Detail" class= "btn btn-warning" name = "' + category.CategoryID + '" onclick="BtnEdit()" data-toggle="modal" data-target="#EditModal">編輯</button>'
+                    //刪除鈕
+                    var btnDelete = '<button type = "button" id = "Detail" class= "btn btn-warning" name = "' + category.CategoryID + '" onclick="BtnDelete()" data-toggle="modal" data-target="#DeleteModal">刪除</button>'
 
-
-                    var cell4 = $('<td></td>').append(btnDetail);
+                    var cell4 = $('<td></td>').append(btnDetail + ' | ' + btnEdit + ' | ' + btnDelete);
                     var row = $('<tr></tr>').append([cell1, cell2, cell3, cell4]);
                     frag.append(row);
                 })
                 $('#Data').append(frag);
                 $("#CategoriesTable").DataTable();
+            });
+        }
+        function BtnEdit() {
+            $.ajax({
+                url: 'http://localhost:1831/api/Categories/' + this.event.target.name,
+                type: "GET",
+                data: 'json',
+                contentType: "application/json"
+            }).done(function (category) {
+                $('#EditCName').val(category.CategoryName);
+                $('#EDescription').val(category.Description);
+
+            }).fail(function (err) {
+                console.log(err);
             });
         }
         function BtnDetail() {
@@ -185,7 +216,7 @@
             $.ajax({
                 type: "POST",
                 url: 'http://localhost:1831/api/Categories/',
-                data: { CategoryName: CCategoryName, Description: CDescription, Picture: imgbinary } //{ CategoryName: CCategoryName, Description: CDescription, Picture: binary }
+                data: { CategoryName: CCategoryName, Description: CDescription } //{ CategoryName: CCategoryName, Description: CDescription, Picture: binary }
                 //contentType: "application/json"
             }).done(function (result) {
                 $('#CreateCName').empty();
