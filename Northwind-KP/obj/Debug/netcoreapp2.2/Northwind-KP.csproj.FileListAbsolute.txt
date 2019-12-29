@@ -30,4 +30,4 @@ D:\Users\Administrator\Documents\GitHub\Northwind-KP\Northwind-KP\obj\Debug\netc
 D:\Users\Administrator\Documents\GitHub\Northwind-KP\Northwind-KP\obj\Debug\netcoreapp2.2\Northwind-KP.dll
 D:\Users\Administrator\Documents\GitHub\Northwind-KP\Northwind-KP\obj\Debug\netcoreapp2.2\Northwind-KP.pdb
 D:\Users\Administrator\Documents\GitHub\Northwind-KP\Northwind-KP\obj\Debug\netcoreapp2.2\Northwind-KP.csproj.CopyComplete
-D:\Users\Administrator\Documents\GitHub\Northwind-KP\Northwind-KP\obj\Debug\netcoreapp2.2\Razor\Views\Home\Categories.g.cshtml.cs
+D:\Users\Administrator\Documents\GitHub\Northwind-KP\Northwind-KP\obj\Debug\netcoreapp2.2\Razor\Views\Categories\Index.g.cshtml.cs

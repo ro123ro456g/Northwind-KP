@@ -13,7 +13,8 @@ using WebApi.Models;
 
 namespace WebApi.Controllers
 {//開CORS origins輸入網域 不知道打*
-    [EnableCors(origins:"*",headers:"*",methods:"*")]
+    //ClientWeb https://localhost:44351
+    [EnableCors(origins: "*", headers:"*",methods:"*")]
     public class CategoriesController : ApiController
     {
         private NorthwindEntities db = new NorthwindEntities();

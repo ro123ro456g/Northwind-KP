@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+@section Styles{
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" />
+}
+    <div class="container">
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#CreateModal">
+            建立產品
+        </button>
+        <h1>產品種類</h1>
+        <div class="container">
+            <table id="CategoriesTable">
+                <thead>
+                    <tr>
+                        <th>CategoryID</th>
+                        <th>CategoryName</th>
+                        <th>Description</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="Data"></tbody>
+            </table>
+        </div>
+
+        <div class="modal fade" id="DetailModal" tabindex="-1" role="dialog" aria-labelledby="DetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="DetailModalLabel">產品種類詳細</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="Detaildd" class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="CreateModalLabel">建立產品</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="Create" class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+@section Scripts{
+    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script>
+        $.get('http://localhost:1831/api/Categories', function (datas) {
+            var frag = $(document.createDocumentFragment());
+            $.each(datas, function (idx, category) {
+                var cell1 = $('<td></td>').text(category.CategoryID);
+                var cell2 = $('<td></td>').text(category.CategoryName);
+                var cell3 = $('<td></td>').text(category.Description);
+                //詳細鈕
+                var cell4 = $('<td></td>').append('<button type = "button" id = "Detail" class= "btn btn-primary" name = "' + category.CategoryID + '" onclick="BtnDetail()" data-toggle="modal" data-target="#DetailModal">詳細</button>');
+
+
+
+                var row = $('<tr></tr>').append([cell1, cell2, cell3, cell4]);
+                frag.append(row);
+            })
+            $('#Data').append(frag);
+            $("#CategoriesTable").DataTable();
+        });
+        
+        function BtnDetail() {
+            $.ajax({
+                url: 'http://localhost:1831/api/Categories/' + this.event.target.name,
+                type: "GET",
+                data: 'json',
+                contentType: "application/json"
+                }).done(function (category) {
+                $('#Detaildd').empty("");
+                console.log(category);
+                var frag = $(document.createDocumentFragment());
+                //$.each(response, function (idx,category) {
+                    var dt1 = $('<dt></dt>').text('CategoryID');
+                    var dd1 = $('<dd></dd>').text(category.CategoryID);
+                    var dt2 = $('<dt></dt>').text('CategoryName');
+                    var dd2 = $('<dd></dd>').text(category.CategoryName);
+                    var dt3 = $('<dt></dt>').text('Description');
+                    var dd3 = $('<dd></dd>').text(category.Description);
+                    var dtImg = $('<dt></dt>').text('Image');
+
+                    var ddImg = $('<dd></dd>').append('<img src="data:image/png;base64,' + category.Picture + '" style="width:320px;height:240px" />');
+                
+                    var dl = $('<dl></dl>').append([dt1, dd1, dt2, dd2, dt3, dd3, dtImg, ddImg]);
+                    frag.append(dl);
+                //})
+                $('#Detaildd').append(frag);
+
+            }).fail(function (err) {
+                console.log(err);
+            });
+        }
+
+
+
+        /*
+        $(function () {
+            $("#CategoriesTable").DataTable();
+        })*/
+    </script>
+}
