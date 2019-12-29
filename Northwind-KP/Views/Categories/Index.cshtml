@@ -10,6 +10,7 @@
             建立產品
         </button>
         <h1>產品種類</h1>
+        <div id="CreateResult"></div>
         <div class="container">
             <table id="CategoriesTable">
                 <thead>
@@ -46,7 +47,42 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="CreateModalLabel">建立產品</h5>
+                        <h5 class="modal-title" id="CreateModalLabel">建立產品種類</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="Create" class="modal-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>種類名稱</th>
+                                    <th>描述</th>
+                                    <th>圖片</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input class="text-box single-line" type="text" id="CreateCName" /></td>
+                                    <td><input class="text-box single-line" type="text" id="CDescription" /></td>
+                                    <td><img id="imgPreview" src="" style="width:320px;height:240px" /><input id="File1" name="File1" type="file" accept="image/*" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="CreateData" type="button" class="btn btn-secondary" data-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="EditModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="EditModalLabel">編輯產品種類</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -65,24 +101,46 @@
 @section Scripts{
     <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script>
-        $.get('http://localhost:1831/api/Categories', function (datas) {
-            var frag = $(document.createDocumentFragment());
-            $.each(datas, function (idx, category) {
-                var cell1 = $('<td></td>').text(category.CategoryID);
-                var cell2 = $('<td></td>').text(category.CategoryName);
-                var cell3 = $('<td></td>').text(category.Description);
-                //詳細鈕
-                var cell4 = $('<td></td>').append('<button type = "button" id = "Detail" class= "btn btn-primary" name = "' + category.CategoryID + '" onclick="BtnDetail()" data-toggle="modal" data-target="#DetailModal">詳細</button>');
+        $(function () {
+            GetIndex();
+        })
 
-
-
-                var row = $('<tr></tr>').append([cell1, cell2, cell3, cell4]);
-                frag.append(row);
-            })
-            $('#Data').append(frag);
-            $("#CategoriesTable").DataTable();
+        $("#File1").change(function () {
+             readURL(this, $('#imgPreview'));
         });
-        
+
+        function readURL(input, img) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    img.attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function GetIndex() {
+            $('#Data').empty();
+            $.get('http://localhost:1831/api/Categories', function (datas) {
+                var frag = $(document.createDocumentFragment());
+                $.each(datas, function (idx, category) {
+                    var cell1 = $('<td></td>').text(category.CategoryID);
+                    var cell2 = $('<td></td>').text(category.CategoryName);
+                    var cell3 = $('<td></td>').text(category.Description);
+                    //詳細鈕
+                    var btnDetail = '<button type = "button" id = "Detail" class= "btn btn-primary" name = "' + category.CategoryID + '" onclick="BtnDetail()" data-toggle="modal" data-target="#DetailModal">詳細</button>';
+                    //編輯鈕
+                    var btnEdit = '<button type = "button" id = "Detail" class= "btn btn-warning" name = "' + category.CategoryID + '" onclick="BtnDetail()" data-toggle="modal" data-target="#EditModal">編輯</button>'
+
+
+                    var cell4 = $('<td></td>').append(btnDetail);
+                    var row = $('<tr></tr>').append([cell1, cell2, cell3, cell4]);
+                    frag.append(row);
+                })
+                $('#Data').append(frag);
+                $("#CategoriesTable").DataTable();
+            });
+        }
         function BtnDetail() {
             $.ajax({
                 url: 'http://localhost:1831/api/Categories/' + this.event.target.name,
@@ -109,12 +167,36 @@
                 //})
                 $('#Detaildd').append(frag);
 
-            }).fail(function (err) {
-                console.log(err);
+                }).fail(function (err) {
+                    console.log(err);
             });
         }
 
+        $('#CreateData').click(function () {
+            var CCategoryName = $('#CreateCName').val();
+            var CDescription = $('#CDescription').val();
+            var imgele = document.getElementById('File1');
+            var imgbinary = null;
+            if (imgele) {
+                //binary = imgele.files[0].getAsBinary();
+                
+            }
 
+            $.ajax({
+                type: "POST",
+                url: 'http://localhost:1831/api/Categories/',
+                data: { CategoryName: CCategoryName, Description: CDescription, Picture: imgbinary } //{ CategoryName: CCategoryName, Description: CDescription, Picture: binary }
+                //contentType: "application/json"
+            }).done(function (result) {
+                $('#CreateCName').empty();
+                $('#CDescription').empty();
+                $('#File1').empty();
+                $('#CreateResult').text("建立完成");
+                GetIndex();
+                }).fail(function (err) {
+                    console.log(err.responseJSON.Message);
+            });
+        })
 
         /*
         $(function () {
