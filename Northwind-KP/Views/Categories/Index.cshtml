@@ -57,6 +57,7 @@
                     <div id="Deletedd" class="modal-body">
                     </div>
                     <div class="modal-footer">
+                        <button id="DeleteData" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -176,7 +177,7 @@
                     //編輯鈕
                     var btnEdit = '<button type = "button" id = "Detail" class= "btn btn-warning" name = "' + category.CategoryID + '" onclick="BtnEdit()" data-toggle="modal" data-target="#EditModal">編輯</button>'
                     //刪除鈕
-                    var btnDelete = '<button type = "button" id = "Detail" class= "btn btn-warning" name = "' + category.CategoryID + '" onclick="BtnDelete()" data-toggle="modal" data-target="#DeleteModal">刪除</button>'
+                    var btnDelete = '<button type = "button" id = "Detail" class= "btn btn-danger" name = "' + category.CategoryID + '" onclick="BtnDelete()" data-toggle="modal" data-target="#DeleteModal">刪除</button>'
 
                     var cell4 = $('<td></td>').append(btnDetail + ' | ' + btnEdit + ' | ' + btnDelete);
                     var row = $('<tr></tr>').append([cell1, cell2, cell3, cell4]);
@@ -187,6 +188,56 @@
             });
         }
 
+        //刪除鈕(類似詳細)function
+        function BtnDelete() {
+            $.ajax({
+                url: 'http://localhost:1831/api/Categories/' + this.event.target.name,
+                type: "GET",
+                data: 'json',
+                contentType: "application/json"
+            }).done(function (category) {
+                $('#Deletedd').empty("");
+                //console.log(category);
+                var frag = $(document.createDocumentFragment());
+                //$.each(response, function (idx,category) {
+                var dt1 = $('<dt></dt>').text('CategoryID');
+                var dd1 = $('<dd id="delID"></dd>').text(category.CategoryID);
+                var dt2 = $('<dt></dt>').text('CategoryName');
+                var dd2 = $('<dd></dd>').text(category.CategoryName);
+                var dt3 = $('<dt></dt>').text('Description');
+                var dd3 = $('<dd></dd>').text(category.Description);
+                var dtImg = $('<dt></dt>').text('Image');
+
+                var ddImg = $('<dd></dd>').append('<img src="data:image/png;base64,' + category.Picture + '" style="width:320px;height:240px" />');
+
+                var dl = $('<dl></dl>').append([dt1, dd1, dt2, dd2, dt3, dd3, dtImg, ddImg]);
+                frag.append(dl);
+                //})
+                $('#Deletedd').append(frag);
+
+            }).fail(function (err) {
+                console.log(err);
+            });
+        }
+        //刪除送出鈕
+        $('#DeleteData').click(function () {
+            var DeleteDataID = $('#delID').text();
+            $.ajax({
+                type: "DELETE",
+                url: 'http://localhost:1831/api/Categories/' + DeleteDataID,
+                //contentType: "application/json"
+            }).done(function (result) {
+                $('#CreateResult').removeClass('alert alert-success');
+                $('#CreateResult').empty();
+                $('#CreateResult').addClass('alert alert-success');
+                $('#CreateResult').text("刪除完成");
+
+                GetIndex();
+            }).fail(function (err) {
+                console.log(err.responseJSON.Message);
+            });
+        })
+
         //編輯鈕(類似詳細)function
         function BtnEdit() {
             $.ajax({
@@ -195,7 +246,7 @@
                 data: 'json',
                 contentType: "application/json"
             }).done(function (category) {
-                console.log(category);
+                //console.log(category);
                 $('#EditCID').val(category.CategoryID);
                 $('#EditCName').val(category.CategoryName);
                 $('#EDescription').val(category.Description);
@@ -225,7 +276,7 @@
                 $('#File1').empty();
                 //$('CreateimgPreview').attr('src', '');
                 $('#CreateResult').addClass('alert alert-success');
-                $('#CreateResult').text("建立完成");
+                $('#CreateResult').text("編輯完成");
 
                 GetIndex();
             }).fail(function (err) {
@@ -242,7 +293,7 @@
                 contentType: "application/json"
                 }).done(function (category) {
                 $('#Detaildd').empty("");
-                console.log(category);
+                //console.log(category);
                 var frag = $(document.createDocumentFragment());
                 //$.each(response, function (idx,category) {
                     var dt1 = $('<dt></dt>').text('CategoryID');
