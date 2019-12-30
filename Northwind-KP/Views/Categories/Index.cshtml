@@ -10,7 +10,7 @@
             建立產品
         </button>
         <h1>產品種類</h1>
-        <div id="CreateResult"></div>
+        <div role="alert" id="CreateResult"></div>
         <div class="container">
             <table id="CategoriesTable">
                 <thead>
@@ -25,6 +25,7 @@
             </table>
         </div>
 
+        <!--產品種類詳細Modal對話框-->
         <div class="modal fade" id="DetailModal" tabindex="-1" role="dialog" aria-labelledby="DetailModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -43,6 +44,26 @@
             </div>
         </div>
 
+        <!--刪除產品種類Modal對話框-->
+        <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="DeleteModalLabel">產品種類詳細</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="Deletedd" class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--新增產品種類Modal對話框-->
         <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -65,7 +86,7 @@
                                 <tr>
                                     <td><input class="text-box single-line" type="text" id="CreateCName" /></td>
                                     <td><input class="text-box single-line" type="text" id="CDescription" /></td>
-                                    <td><img id="imgPreview" src="" style="width:320px;height:240px" /><input id="File1" name="File1" type="file" accept="image/*" /></td>
+                                    <td><img id="CreateimgPreview" src="" style="width:320px;height:240px" /><input id="CreateFile1" name="CreateFile1" type="file" accept="image/*" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -78,6 +99,7 @@
             </div>
         </div>
 
+        <!--編輯產品種類Modal對話框-->
         <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="EditModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -91,6 +113,7 @@
                         <table>
                             <thead>
                                 <tr>
+                                    <th hidden="hidden">種類ID</th>
                                     <th>種類名稱</th>
                                     <th>描述</th>
                                     <th>圖片</th>
@@ -98,9 +121,10 @@
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td hidden="hidden"><input hidden="hidden" class="text-box single-line" type="text" id="EditCID" /></td>
                                     <td><input class="text-box single-line" type="text" id="EditCName" /></td>
                                     <td><input class="text-box single-line" type="text" id="EDescription" /></td>
-                                    <td><img id="imgPreview" src="" style="width:320px;height:240px" /><input id="File1" name="File1" type="file" accept="image/*" /></td>
+                                    <td><img id="EditimgPreview" src="" style="width:320px;height:240px" /><input id="EditFile1" name="EditFile1" type="file" accept="image/*" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -121,8 +145,12 @@
             GetIndex();
         })
 
-        $("#File1").change(function () {
-             readURL(this, $('#imgPreview'));
+        $("#CreateFile1").change(function () {
+             readURL(this, $('#CreateimgPreview'));
+        });
+
+        $("#EditFile1").change(function () {
+            readURL(this, $('#EditimgPreview'));
         });
 
         function readURL(input, img) {
@@ -158,6 +186,8 @@
                 $("#CategoriesTable").DataTable();
             });
         }
+
+        //編輯鈕(類似詳細)function
         function BtnEdit() {
             $.ajax({
                 url: 'http://localhost:1831/api/Categories/' + this.event.target.name,
@@ -165,13 +195,45 @@
                 data: 'json',
                 contentType: "application/json"
             }).done(function (category) {
+                console.log(category);
+                $('#EditCID').val(category.CategoryID);
                 $('#EditCName').val(category.CategoryName);
                 $('#EDescription').val(category.Description);
-
+                $('#EditimgPreview').attr('src', 'data:image/png;base64,' + category.Picture);
             }).fail(function (err) {
                 console.log(err);
             });
         }
+        //編輯送出鈕
+        $('#EditData').click(function () {
+            var ECatroryID = $('#EditCID').val();
+            var ECategoryName = $('#EditCName').val();
+            var EDescription = $('#EDescription').val();
+            var Editbinary = document.getElementById('EditimgPreview').src;
+
+            $.ajax({
+                type: "PUT",
+                url: 'http://localhost:1831/api/Categories/' + ECatroryID,
+                data: { CategoryID: ECatroryID, CategoryName: ECategoryName, Description: EDescription, Picture: Editbinary } //{ CategoryName: CCategoryName, Description: CDescription, Picture: binary }
+                //contentType: "application/json"
+            }).done(function (result) {
+                $('#CreateResult').removeClass('alert alert-success');
+                $('#CreateResult').empty();
+                $('#EditCID').val('');
+                $('#EditCName').val('');
+                $('#EDescription').val('');
+                $('#File1').empty();
+                //$('CreateimgPreview').attr('src', '');
+                $('#CreateResult').addClass('alert alert-success');
+                $('#CreateResult').text("建立完成");
+
+                GetIndex();
+            }).fail(function (err) {
+                console.log(err.responseJSON.Message);
+            });
+        })
+
+        //詳細鈕function
         function BtnDetail() {
             $.ajax({
                 url: 'http://localhost:1831/api/Categories/' + this.event.target.name,
@@ -203,26 +265,27 @@
             });
         }
 
+        //新建鈕function
         $('#CreateData').click(function () {
             var CCategoryName = $('#CreateCName').val();
             var CDescription = $('#CDescription').val();
-            var imgele = document.getElementById('File1');
-            var imgbinary = null;
-            if (imgele) {
-                //binary = imgele.files[0].getAsBinary();
-                
-            }
+            var binary = document.getElementById('CreateimgPreview').src;
 
             $.ajax({
                 type: "POST",
                 url: 'http://localhost:1831/api/Categories/',
-                data: { CategoryName: CCategoryName, Description: CDescription } //{ CategoryName: CCategoryName, Description: CDescription, Picture: binary }
+                data: { CategoryName: CCategoryName, Description: CDescription, Picture: binary } //{ CategoryName: CCategoryName, Description: CDescription, Picture: binary }
                 //contentType: "application/json"
             }).done(function (result) {
-                $('#CreateCName').empty();
-                $('#CDescription').empty();
+                $('#CreateResult').removeClass('alert alert-success');
+                $('#CreateResult').text('');
+                $('#CreateCName').val('');
+                $('#CDescription').val('');
                 $('#File1').empty();
+                //$('CreateimgPreview').attr('src', '');
+                $('#CreateResult').addClass('alert alert-success');
                 $('#CreateResult').text("建立完成");
+
                 GetIndex();
                 }).fail(function (err) {
                     console.log(err.responseJSON.Message);

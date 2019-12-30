@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace Northwind_KP.Models
+namespace WebApi.Models
 {
-    public class Categories
+    public class CategoriesPostModel
     {
-        public int CategoryID { get; set; }
+        public int? CategoryID { get; set; }
         public string CategoryName { get; set; }
         public string Description { get; set; }
-        public byte[] Picture { get; set; }
+        public string Picture { get; set; }
     }
 }

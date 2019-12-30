@@ -40,13 +40,14 @@ namespace WebApi.Controllers
 
         // PUT: api/Categories/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutCategories(int id, Categories categories)
+        public IHttpActionResult PutCategories(int id, CategoriesPostModel categoriesPostModel)
         {
+            CategoryResult categoryResult = new CategoryResult();//DI?
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            Categories categories = categoryResult.MethodConvert(categoriesPostModel);
             if (id != categories.CategoryID)
             {
                 return BadRequest();
@@ -75,12 +76,14 @@ namespace WebApi.Controllers
 
         // POST: api/Categories
         [ResponseType(typeof(Categories))]
-        public IHttpActionResult PostCategories(Categories categories)
+        public IHttpActionResult PostCategories(CategoriesPostModel categoriesPostModel)
         {
+            CategoryResult categoryResult = new CategoryResult();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            Categories categories = categoryResult.MethodConvert(categoriesPostModel);
 
             db.Categories.Add(categories);
             db.SaveChanges();
