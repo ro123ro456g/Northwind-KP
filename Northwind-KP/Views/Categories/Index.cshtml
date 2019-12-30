@@ -208,7 +208,7 @@
                 var dd3 = $('<dd></dd>').text(category.Description);
                 var dtImg = $('<dt></dt>').text('Image');
 
-                var ddImg = $('<dd></dd>').append('<img src="data:image/png;base64,' + category.Picture + '" style="width:320px;height:240px" />');
+                var ddImg = $('<dd></dd>').append('<img src="data:image/jpeg;base64,' + category.Picture + '" style="width:320px;height:240px" />');
 
                 var dl = $('<dl></dl>').append([dt1, dd1, dt2, dd2, dt3, dd3, dtImg, ddImg]);
                 frag.append(dl);
@@ -250,7 +250,7 @@
                 $('#EditCID').val(category.CategoryID);
                 $('#EditCName').val(category.CategoryName);
                 $('#EDescription').val(category.Description);
-                $('#EditimgPreview').attr('src', 'data:image/png;base64,' + category.Picture);
+                $('#EditimgPreview').attr('src', 'data:image/jpeg;base64,' + category.Picture);
             }).fail(function (err) {
                 console.log(err);
             });
@@ -304,7 +304,7 @@
                     var dd3 = $('<dd></dd>').text(category.Description);
                     var dtImg = $('<dt></dt>').text('Image');
 
-                    var ddImg = $('<dd></dd>').append('<img src="data:image/png;base64,' + category.Picture + '" style="width:320px;height:240px" />');
+                    var ddImg = $('<dd></dd>').append('<img src="data:image/jpeg;base64,' + category.Picture + '" style="width:320px;height:240px" />');
                 
                     var dl = $('<dl></dl>').append([dt1, dd1, dt2, dd2, dt3, dd3, dtImg, ddImg]);
                     frag.append(dl);

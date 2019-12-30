@@ -18,7 +18,7 @@ namespace WebApi.Models
             categories.CategoryName = CategoriesPostModel.CategoryName;
             if (CategoriesPostModel.Description != null || CategoriesPostModel.Description != "") 
                 categories.Description = CategoriesPostModel.Description;
-            if (CategoriesPostModel.Picture != null || CategoriesPostModel.Picture != "")
+            if (CategoriesPostModel.Picture != null || CategoriesPostModel.Picture != "" || CategoriesPostModel.Picture.Length < 20) 
             {
                 string StrBinary = CategoriesPostModel.Picture.Substring(23);
                 categories.Picture = Convert.FromBase64String(StrBinary);
